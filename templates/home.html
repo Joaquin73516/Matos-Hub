@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Matos Hub</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+
+<div class="inicio">
+  <img class = "logo" src="/static/logo.png" alt="">
+  <div class="semana">
+    <p class = "frase">Frase de la semana:</p>
+    <p class="matos-message" id = "mensaje">"Mah que Show"</p>
+    <div class="photo-semana">
+        <p class = "frase-photo">Imagen más vista</p>
+        <img src="/static/uploads/{{ vista }}" alt="Imagen mas vista">
+    </div>
+    <p class ="aviso">Unicamente fotos de amigos entre amigos</p>
+  </div>
+
+  {% if error %}
+    <p class = "error">{{ error }}</p>
+  {% endif %}
+
+  <div class="fijo">
+    <button id="enviar">+</button>
+  </div>
+</div>
+
+<div class="galeria" id="galeria"></div>
+
+
+<div id="modal" class="modal">
+  <span class="cerrar">&times;</span>
+  <img id="modal-img" alt="Imagen ampliada">
+</div>
+
+
+<script>
+  const IMAGENES = {{ imagenes | tojson }};
+</script>
+
+</body>
+</html>

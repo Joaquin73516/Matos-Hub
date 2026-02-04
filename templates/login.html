@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matos Hub</title>
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/login_styles.css') }}">
+</head>
+<body>
+    <div class = "login">
+        <h1>Registrate</h1>
+        <hr>
+        <div class="formulario">
+            <form action="/sesion" method="post">
+                <div class="input-box">
+                    <input type="text" name = "name" oninput="this.value = this.value.replace(/\s/g, '')" required>
+                    <label>Usuario</label>
+                </div>
+                <div class="send">
+                    <button type="submit">Entrar</button>
+                </div>
+            </form>
+        </div>
+        <p class="aviso">Al registrarse y utilizar esta plataforma, el usuario declara haber leído, entendido y aceptado en su totalidad los presentes <a href="static/Términos-De-Uso-Y-Política-De-Contenido.pdf" target="_blank">Terminos y Condiciones</a>, así como la política de privacidad aplicable.</p>
+    </div>
+</body>
+</html>
