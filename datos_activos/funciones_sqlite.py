@@ -2,11 +2,13 @@ import sqlite3 as sq
 import os,sys
 import hashlib
 import json
+import os
 
 class Sqlite_create():
     def __init__(self,table_name) -> None:
         self.table_name = table_name
-        self.ruta = r"C:\Users\Joaquin\Desktop\Matos Hub\datos_activos\datos.db"
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.ruta = os.path.join(base_dir, "datos_activos", "datos.db")
         
     def encriptar(self,contra:str):
         return hashlib.sha256(contra.encode()).hexdigest()
