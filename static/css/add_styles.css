@@ -1,0 +1,149 @@
+body {
+    font-family: sans-serif;
+    background-color: rgba(60, 100, 100, 0.5);
+}
+
+h1{
+    position: absolute;
+    top: 0%;
+    font-size: 25px;
+    left: 16%;
+}
+
+hr {
+    width: 80%;
+    position: absolute;
+    top: 18%;
+    left: 10%;
+}
+
+.aviso {
+    left: 5%;
+    width: 90%;
+    justify-content: center;
+    font-size: 12px;
+    color: #adadaa;
+    position: absolute;
+    bottom: 0%;
+}
+
+.foto {
+    position: absolute;
+    top: 50%;
+    left: 11%;
+    }
+
+.login{
+  top: 20%;
+  align-content: center;
+  width: 70%;
+  height: 50%;
+  max-width: 600px;
+  text-align: justify;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 15px;
+  position: fixed;
+  justify-self: center;
+}
+
+.input-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-box input{
+ top: 30%;
+  align-items: center;
+  padding: 6px;
+  position: absolute;
+  border-radius: 10px;
+  height: 30px;
+  width: 200px;
+  margin-top: 10px;
+  background-color: transparent;
+  text-align: left;
+  text-indent: 10px;
+  font-size: 17px;
+  border-color: rgb(99, 99, 99);
+}
+
+.input-box label{
+  top: 33%;
+  position: absolute;
+  padding:  2px;
+  color: gray;
+  background-color: transparent;
+  border-radius: 2px;
+  width: auto;
+  left: 15%;
+  margin-top: 4%;
+  font-size: 17px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  z-index: -1;
+}
+
+.input-box input:focus + label,
+.input-box input:valid + label {
+  justify-content: center;
+  z-index: 1;
+  top: 27%;
+  font-size: 13px;
+  transition: 0.5s;
+  color: #adadad;
+  background-color: #ffffff;
+}
+
+.send button {
+    position: absolute;
+    top: 60%;
+    left: 10%;
+    border-color: transparent;
+    padding: 0.5 1.5rem;
+    width: 215px;
+    height: 40px;
+    text-decoration: none;
+    background-color: black;
+    color: #ffffff;
+    border-radius: 30px;
+}
+
+@media (min-width: 1024px) {  /* esto es pa compu*/
+    h1 {
+        position: absolute;
+        left: 32%; }
+
+    .send button {
+        left: 33%;
+    }
+    
+    .input-box label{
+        left: 35%;
+        top: 29.5%;
+    }
+
+    .foto {
+        position: absolute;
+        top: 50%;
+        left: 32.5%;
+    }
+
+    .input-box input:focus + label,
+    .input-box input:valid + label { 
+        top: 24%;
+    }
+
+    .aviso {
+    left: 5%;
+    width: 90%;
+    justify-content: center;
+    font-size: 16px;
+    color: #adadaa;
+    position: absolute;
+    bottom: 0%;
+}
+
+}
