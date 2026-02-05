@@ -12,10 +12,6 @@ from PIL import Image, UnidentifiedImageError, ImageFile
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-
-
-
-
 def obtener_imagenes(ruta):
     extensiones = ('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp')
     imagenes = []
@@ -32,6 +28,10 @@ def obtener_imagenes(ruta):
 
     return imagenes
 
+def get_bans():
+    sq = Sqlite_create("_baner_")
+    return sq.get_all_data().values()
+    
 app = Flask(__name__)
 app.secret_key = "3d16a60b798846cce41b578605ab9786e5b6da13e01e6f9d95c653e7512517bc"
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # límite 5MB
@@ -52,7 +52,9 @@ limiter = Limiter(
 
 @app.before_request
 def cambios():
-    return "Estamos Haciendo cambios en la pagina, Gracias por usar el servicio", 400
+    if get_user_ip() in get_bans():
+        return "Estas baneado por pendejito"
+    
 
 def render(path, context = None):
     if context is None:

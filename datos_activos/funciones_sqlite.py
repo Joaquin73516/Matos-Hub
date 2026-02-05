@@ -175,3 +175,23 @@ class Sqlite_create():
             conn.commit()
         finally:
             conn.close()
+            
+    def get_all_data(self) -> dict:
+
+        if not self.exist_table():
+            return {}
+
+        conn = sq.connect(self.ruta)
+        cursor = conn.cursor()
+
+        cursor.execute(f"SELECT * FROM {self.table_name}")
+        datos = cursor.fetchall()
+
+        conn.close()
+
+        resultado = {}
+        for k,v in datos:
+            resultado[k] = v
+
+        return resultado
+

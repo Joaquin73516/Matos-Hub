@@ -4,7 +4,7 @@ import os
 import re
 
 class User(Sqlite_create):
-    def __init__(self, name, ip) -> None:
+    def __init__(self, name, ip = False) -> None:
         self.name = name.replace("#", "")
         self.table_name = f"{self.name}_adm"
         super().__init__(self.table_name)
@@ -17,8 +17,9 @@ class User(Sqlite_create):
         else:
             self.photos:list = self.get_list_value("photos") # type: ignore
             self.photos_num:int = self.get_value_of_key("photos_num") # type: ignore
-        self.ip = ip
-        self.set_key_of_value("ip",self.ip)
+        if ip:
+            self.ip = ip
+            self.set_key_of_value("ip",self.ip)
         self.sesion()
 
     def sesion(self):
