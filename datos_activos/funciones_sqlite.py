@@ -8,16 +8,16 @@ class Sqlite_create():
     def __init__(self,table_name) -> None:
         self.table_name = table_name
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.ruta = os.path.join(base_dir, "datos_activos", "datos.db")
-        
+        self.ruta = os.path.join(base_dir, "datos.db")
+
     def encriptar(self,contra:str):
         return hashlib.sha256(contra.encode()).hexdigest()
-    
+
     def new_route(self,ruta):
         self.ruta = ruta
-        
+
     def Create_table(self):
-    
+
         conn = sq.connect(self.ruta)
 
         cursor = conn.cursor()
@@ -29,16 +29,16 @@ class Sqlite_create():
         )
         conn.commit()
         conn.close()
-        
+
         print(f"Se creó la tabla in {self.ruta}")
-    
+
 
     def exist_key(self,key_search) -> bool:
-          
+
         conn = sq.connect(self.ruta)
 
         cursor = conn.cursor()
-        
+
         instruccion = f"SELECT * FROM {self.table_name}"
         cursor.execute(instruccion)
         datos = cursor.fetchall()
@@ -49,51 +49,51 @@ class Sqlite_create():
             if key_search in i:
                 return True
         return False
-        
+
     def set_key_of_value(self,key,value):
-        
+
         if type(value) == str:
             value = f"'{value}'"
-        
+
         conn = sq.connect(self.ruta)
 
         cursor = conn.cursor()
-        
+
         if not self.exist_key(key):
             instruccion = f"INSERT INTO {self.table_name} VALUES ('{key}', {value})"
         else:
             instruccion = f"UPDATE {self.table_name} SET key='{key}', value={value} WHERE key like '{key}'"
-            
+
         cursor.execute(instruccion)
-        
+
         conn.commit()
         conn.close()
-    
+
     def get_value_of_key(self,key):
 
         if not self.exist_key(key):
             return None
-        
+
         conn = sq.connect(self.ruta)
 
         cursor = conn.cursor()
-        
+
         instruccion = f"SELECT * FROM {self.table_name} WHERE key like '{key}'"
         cursor.execute(instruccion)
         datos = cursor.fetchall()
         conn.commit()
         conn.close()
-        
+
         return datos[0][1]
-    
+
     def exist_table(self) -> bool:
         try:
             conn = sq.connect(self.ruta)
             cursor = conn.cursor()
 
             cursor.execute("""
-                SELECT name 
-                FROM sqlite_master 
+                SELECT name
+                FROM sqlite_master
                 WHERE type='table' AND name=?;
             """, (self.table_name,))
 
@@ -104,7 +104,7 @@ class Sqlite_create():
 
         except sq.Error:
             return False
-        
+
     def set_list_value(self, key, lista:list):
 
         if not isinstance(lista, list):
@@ -128,7 +128,7 @@ class Sqlite_create():
 
         conn.commit()
         conn.close()
-        
+
 
     def get_list_value(self, key):
 
@@ -149,13 +149,13 @@ class Sqlite_create():
         return json.loads(data[0])  # string → list
 
     def get_all_tables(self) -> list: # type: ignore
-        
+
         conn = sq.connect(self.ruta)
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT name 
-            FROM sqlite_master 
+            SELECT name
+            FROM sqlite_master
             WHERE type='table'
             AND name NOT LIKE 'sqlite_%';
         """)
