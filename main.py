@@ -54,23 +54,20 @@ limiter = Limiter(
     default_limits=[]
 )
 
-@app.route("/img/<nombre>")
-def servir_imagen(nombre):
+UPLOAD_FOLDER = "/home/Joaquin73615/Matos-Hub/uploads"
 
-    if "name" not in session:
-        abort(403)
+@app.route("/img/<path:filename>")
+def servir_imagen(filename):
+    ruta = os.path.join(UPLOAD_FOLDER, filename)
 
-    # evita rutas raras tipo ../../
-    if ".." in nombre or "/" in nombre:
+    if not os.path.exists(ruta):
         abort(404)
 
-    response = Response()
-    response.headers["X-Accel-Redirect"] = f"/protected/{nombre}"
-    return response
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 @app.before_request
 def cambios():
-    if get_user_ip() in get_bans() or True:
+    if get_user_ip() in get_bans():
         return render_template("error.html",error = "Estas baneado por pendejito")
 
 
