@@ -51,7 +51,7 @@ def limite_por_usuario():
 limiter = Limiter(
     key_func=limite_por_usuario,
     app=app,
-    default_limits=["200 per day"]
+    default_limits=[]
 )
 
 @app.route("/img/<nombre>")
@@ -70,8 +70,8 @@ def servir_imagen(nombre):
 
 @app.before_request
 def cambios():
-    if get_user_ip() in get_bans():
-        return "Estas baneado por pendejito"
+    if get_user_ip() in get_bans() or True:
+        return render_template("error.html",error = "Estas baneado por pendejito")
 
 
 def render(path, context = None):
@@ -317,7 +317,7 @@ def too_large(e):
 
 @app.errorhandler(500)
 def error_500(e):
-    return "Error interno, Disculpa las molestias, no es tu culpa es de Joaquin", 500
+    return render_template("error.html",error = "Error Interno, No es tu culpa, es de Joaquin")
 
 
 def run_flask():
