@@ -36,7 +36,7 @@ class User(Sqlite_create):
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         BASE_DIR = os.path.dirname(BASE_DIR)
 
-        CARPETA_SUBIDAS = os.path.join(BASE_DIR, "static", "uploads")
+        CARPETA_SUBIDAS = os.path.join(BASE_DIR,"uploads")
         os.makedirs(CARPETA_SUBIDAS, exist_ok=True)
 
         self.sesion()

@@ -82,7 +82,7 @@ def index(context = {}):
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOADS_DIR = os.path.join(BASE_DIR, "static", "uploads")
+UPLOADS_DIR = os.path.join(BASE_DIR,"uploads")
 JSON_PATH = os.path.join(UPLOADS_DIR, "opens.json")
 
 
