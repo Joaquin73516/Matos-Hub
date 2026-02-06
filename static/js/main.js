@@ -10,13 +10,13 @@ function cargarImagenes() {
   for (let i = 0; i < porCarga; i++) {
     if (indice >= IMAGENES.length) return;
 
-    const nombreImagen = IMAGENES[indice]; 
+    const nombreImagen = IMAGENES[indice];
 
     const card = document.createElement("div");
     card.className = "card";
 
     const img = document.createElement("img");
-    img.src = `/static/uploads/${nombreImagen}`;
+    img.src = `/img/${nombreImagen}`;
     img.loading = "lazy";
 
     img.addEventListener("click", () => {

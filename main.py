@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,Response,redirect,url_for,make_response
+from flask import Flask, render_template, request,Response,redirect,url_for,make_response,send_from_directory
 import os,time
 from flask.globals import session
 import random
@@ -31,7 +31,7 @@ def obtener_imagenes(ruta):
 def get_bans():
     sq = Sqlite_create("_baner_")
     return sq.get_all_data().values()
-    
+
 app = Flask(__name__)
 app.secret_key = "3d16a60b798846cce41b578605ab9786e5b6da13e01e6f9d95c653e7512517bc"
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # límite 5MB
@@ -43,18 +43,36 @@ app.config.update(
     SESSION_COOKIE_SECURE=True
 )
 
+def limite_por_usuario():
+    if "usuario" in session:
+        return session["usuario"]  # cada cuenta separada
+    return get_remote_address()    # si no está logueado usa IP
+
 limiter = Limiter(
-    get_remote_address,
+    key_func=limite_por_usuario,
     app=app,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["200 per day"]
 )
 
+@app.route("/img/<nombre>")
+def servir_imagen(nombre):
+
+    if "name" not in session:
+        abort(403)
+
+    # evita rutas raras tipo ../../
+    if ".." in nombre or "/" in nombre:
+        abort(404)
+
+    response = Response()
+    response.headers["X-Accel-Redirect"] = f"/protected/{nombre}"
+    return response
 
 @app.before_request
 def cambios():
     if get_user_ip() in get_bans():
         return "Estas baneado por pendejito"
-    
+
 
 def render(path, context = None):
     if context is None:

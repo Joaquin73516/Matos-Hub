@@ -11,4 +11,4 @@ for num,i in enumerate(all_tables):
     if us.get_value_of_key("ip") == ip_ban:
         baner = Sqlite_create("_baner_")
         baner.set_key_of_value(us.name,us.get_value_of_key("ip"))
-        print(f"Se baneo a {us.name}")    
+        print(f"Se baneo a {us.name}")
