@@ -69,16 +69,12 @@ def servir_imagen(filename):
 def seguridad_total():
     baner = Sqlite_create("_baner_")
 
-    ip = get_user_ip()
     device = request.cookies.get("device_id")
     fingerprint = session.get("fingerprint")
     user = session.get("user")
 
     if user and baner.get_value_of_key(f"user_{user}"):
         return render_template("error.html", error="Baneado")
-
-    if ip and baner.get_value_of_key(f"ip_{ip}"):
-        return render_template("error.html", error="IP baneada")
 
     if device and baner.get_value_of_key(f"device_{device}"):
         return render_template("error.html", error="Dispositivo baneado")
