@@ -67,5 +67,20 @@ document.getElementById("enviar").addEventListener("click", () => {
   window.location.href = "/add_photo";
 });
 
+async function getFingerprint() {
+    const fp = await import('https://openfpcdn.io/fingerprintjs/v4')
+    const result = await fp.load()
+    const visitor = await result.get()
+
+    fetch("/guardar_fingerprint", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            fingerprint: visitor.visitorId
+        })
+    })
+}
+getFingerprint();
+
 
 cargarImagenes();

@@ -66,9 +66,25 @@ def servir_imagen(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 @app.before_request
-def cambios():
-    if get_user_ip() in get_bans():
-        return render_template("error.html",error = "Estas baneado por pendejito")
+def seguridad_total():
+    baner = Sqlite_create("_baner_")
+
+    ip = get_user_ip()
+    device = request.cookies.get("device_id")
+    fingerprint = session.get("fingerprint")
+    user = session.get("user")
+
+    if user and baner.get_value_of_key(f"user_{user}"):
+        return render_template("error.html", error="Baneado")
+
+    if ip and baner.get_value_of_key(f"ip_{ip}"):
+        return render_template("error.html", error="IP baneada")
+
+    if device and baner.get_value_of_key(f"device_{device}"):
+        return render_template("error.html", error="Dispositivo baneado")
+
+    if fingerprint and baner.get_value_of_key(f"fingerprint_{fingerprint}"):
+        return render_template("error.html", error="Baneado permanente")
 
 
 def render(path, context = None):
@@ -78,9 +94,17 @@ def render(path, context = None):
 
 def get_user_ip():
     if request.headers.get("X-Forwarded-For"):
-        return request.headers.get("X-Forwarded-For").split(",")[0].strip()
+        return request.headers.get("X-Forwarded-For").split(",")[0]
     return request.remote_addr
 
+def get_device_id():
+    device = request.cookies.get("device_id")
+    if not device:
+        device = str(uuid.uuid4())
+    return device
+
+def get_fingerprint():
+    return session.get("fingerprint")
 
 @app.route("/", methods=["POST","GET"])
 def index(context = {}):
@@ -120,7 +144,13 @@ def home(context = {}):
 
     nombre = session["name"]
     nombre = nombre.replace(" ","")
-    user = User(nombre, ip = get_user_ip())
+    user = User(
+        name=nombre,
+        ip=get_user_ip(),
+        device_id=get_device_id(),
+        fingerprint=get_fingerprint()
+    )
+
 
     context = {
         "imagenes": obtener_imagenes(UPLOADS_DIR),
@@ -128,6 +158,14 @@ def home(context = {}):
     }
 
     return render("home.html", context=context)
+
+@app.after_request
+def guardar_cookie(response):
+    if not request.cookies.get("device_id"):
+        import uuid
+        device = str(uuid.uuid4())
+        response.set_cookie("device_id", device, max_age=60*60*24*365)
+    return response
 
 
 @app.route("/imagen-abierta", methods=["POST", "GET"])
@@ -151,6 +189,11 @@ def imagen_abierta():
 
     return "", 204
 
+@app.route("/guardar_fingerprint", methods=["POST"])
+def guardar_fingerprint():
+    data = request.json
+    session["fingerprint"] = data["fingerprint"]
+    return "ok"
 
 @app.route("/login", methods=["POST","GET"])
 def login():
