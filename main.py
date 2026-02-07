@@ -1,21 +1,19 @@
-from flask import Flask, render_template, request,Response,redirect,url_for,make_response,send_from_directory
-import os,time
+from flask import Flask, render_template, request,Response,redirect,url_for,make_response,send_from_directory, abort
+import os
 from flask.globals import session
 import random
 from datos_activos.funciones_user_sqlite import User, Sqlite_create
 import json
 import uuid
-import os
 import re
 import html
 from PIL import Image, UnidentifiedImageError, ImageFile
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-
-import os
 from datetime import datetime
 
 def obtener_imagenes(ruta):
+
     extensiones = ('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp')
     imagenes = []
 
@@ -23,30 +21,23 @@ def obtener_imagenes(ruta):
         if archivo.lower().endswith(extensiones):
             imagenes.append(archivo)
 
-    def extraer_fecha(nombre_archivo):
-        nombre_sin_ext = os.path.splitext(nombre_archivo)[0]
-        partes = nombre_sin_ext.split("_")
+    def obtener_fecha(nombre):
+        i = nombre.split("_")
+        dia, mes = i[2].split("-")
+        try:
+            hora, minuto = i[3].split("-")
+            minuto = minuto.split(".")[0]
+        except ValueError:
+            hora, minuto = i[3].split(".")[0].split("-")
+            minuto = minuto.split(".")[0]
 
-        # buscar parte que tenga formato fecha 03-02_14-22
-        for parte in partes:
-            if "-" in parte and ":" not in parte:
-                try:
-                    # fecha tipo 03-02_14-22
-                    return datetime.strptime(parte, "%m-%d_%H-%M")
-                except:
-                    pass
 
-        # si no encuentra fecha válida
-        return datetime.min
+        return (int(mes), int(dia), int(hora), int(minuto))
 
-    # ordenar por fecha extraída del nombre
-    imagenes.sort(key=extraer_fecha)
 
-    # más recientes primero
-    imagenes.reverse()
+    imagenes_ordenadas = sorted(imagenes, key=obtener_fecha, reverse=True)
 
-    return imagenes
-
+    return imagenes_ordenadas
 
 def get_bans():
     sq = Sqlite_create("_baner_")
