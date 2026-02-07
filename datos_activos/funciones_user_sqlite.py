@@ -8,6 +8,7 @@ class User(Sqlite_create):
         self.table_name = f"{self.name}_adm"
         super().__init__(self.table_name)
 
+        # 🔵 SI NO EXISTE TABLA → CREAR
         if not self.exist_table():
             self.Create_table()
 
@@ -17,25 +18,51 @@ class User(Sqlite_create):
             self.set_list_value("photos", self.photos)
             self.set_key_of_value("photos_num", self.photos_num)
 
-            # datos seguridad
-            self.set_key_of_value("ip", ip)
-            self.set_key_of_value("device_id", device_id)
-            self.set_key_of_value("fingerprint", fingerprint)
+            # seguridad (solo si vienen datos)
+            if ip is not None:
+                self.ip = ip
+                self.set_key_of_value("ip", ip)
 
-            # historial ips (por si cambia wifi)
-            self.set_list_value("ips_historial", [ip] if ip else [])
+            if device_id is not None:
+                self.device_id = device_id
+                self.set_key_of_value("device_id", device_id)
 
+            if fingerprint is not None:
+                self.fingerprint = fingerprint
+                self.set_key_of_value("fingerprint", fingerprint)
+
+            # historial ips
+            if ip is not None:
+                self.ips_historial = [ip]
+            else:
+                self.ips_historial = []
+
+            self.set_list_value("ips_historial", self.ips_historial)
+
+        # 🔵 SI YA EXISTE TABLA
         else:
-            # cargar datos
             self.photos: list = self.get_list_value("photos") or []
             self.photos_num: int = self.get_value_of_key("photos_num") or 0
 
-            self.ip = self.get_value_of_key("ip")
-            self.device_id = self.get_value_of_key("device_id")
-            self.fingerprint = self.get_value_of_key("fingerprint")
-            self.ips_historial = self.get_list_value("ips_historial") or []
+            # cargar solo si existen en db
+            db_ip = self.get_value_of_key("ip")
+            db_device = self.get_value_of_key("device_id")
+            db_fingerprint = self.get_value_of_key("fingerprint")
+            db_ips_hist = self.get_list_value("ips_historial") or []
 
-        if ip:
+            if db_ip is not None:
+                self.ip = db_ip
+
+            if db_device is not None:
+                self.device_id = db_device
+
+            if db_fingerprint is not None:
+                self.fingerprint = db_fingerprint
+
+            self.ips_historial = db_ips_hist
+
+        # 🔵 ACTUALIZAR SOLO SI LLEGAN DATOS NUEVOS
+        if ip is not None:
             self.ip = ip
             self.set_key_of_value("ip", ip)
 
@@ -43,11 +70,11 @@ class User(Sqlite_create):
                 self.ips_historial.append(ip)
                 self.set_list_value("ips_historial", self.ips_historial)
 
-        if device_id:
+        if device_id is not None:
             self.device_id = device_id
             self.set_key_of_value("device_id", device_id)
 
-        if fingerprint:
+        if fingerprint is not None:
             self.fingerprint = fingerprint
             self.set_key_of_value("fingerprint", fingerprint)
 
