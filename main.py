@@ -12,6 +12,9 @@ from PIL import Image, UnidentifiedImageError, ImageFile
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+import os
+from datetime import datetime
+
 def obtener_imagenes(ruta):
     extensiones = ('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp')
     imagenes = []
@@ -20,13 +23,30 @@ def obtener_imagenes(ruta):
         if archivo.lower().endswith(extensiones):
             imagenes.append(archivo)
 
-    imagenes.sort(
-        key=lambda archivo: os.path.getctime(os.path.join(ruta, archivo))
-    )
+    def extraer_fecha(nombre_archivo):
+        nombre_sin_ext = os.path.splitext(nombre_archivo)[0]
+        partes = nombre_sin_ext.split("_")
 
+        # buscar parte que tenga formato fecha 03-02_14-22
+        for parte in partes:
+            if "-" in parte and ":" not in parte:
+                try:
+                    # fecha tipo 03-02_14-22
+                    return datetime.strptime(parte, "%m-%d_%H-%M")
+                except:
+                    pass
+
+        # si no encuentra fecha válida
+        return datetime.min
+
+    # ordenar por fecha extraída del nombre
+    imagenes.sort(key=extraer_fecha)
+
+    # más recientes primero
     imagenes.reverse()
 
     return imagenes
+
 
 def get_bans():
     sq = Sqlite_create("_baner_")
