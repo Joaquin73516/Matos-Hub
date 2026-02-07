@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matos Hub</title>
+    <script>
+        function ocultarBtn(){
+        document.getElementById("btn").style.display = "none";
+        };
+    </script defer>
     <link rel="stylesheet"
       href="{{ url_for('static', filename='css/add_styles.css') }}">
 </head>
@@ -12,7 +17,7 @@
         <h1>Agrega una Foto</h1>
         <hr>
         <div class="formulario">
-            <form action="/add" method="post" enctype="multipart/form-data">
+            <form action="/add" method="post" enctype="multipart/form-data" onsubmit="ocultarBtn()">
                 <div class="input-box">
                     <input type="text" name = "name_photo" required>
                     <label>Nombre de la Foto</label>
@@ -21,7 +26,7 @@
                     <input class="fotobtn" name="foto" type="file" accept="image/*" required>
                 </div>
                 <div class="send">
-                    <button type="submit">Enviar</button>
+                    <button type="submit" id="btn">Enviar</button>
                 </div>
             </form>
         </div>
